@@ -5,8 +5,13 @@ export default function ProjectsSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/projects/')
-            .then((res) => res.json())
+        const backendUrl = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
+
+        fetch(`${backendUrl}/api/projects/`)
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to fetch projects');
+                return res.json();
+            })
             .then((data) => {
                 setProjects(data);
                 setLoading(false);
@@ -30,14 +35,24 @@ export default function ProjectsSection() {
                     <div key={project.id} className="border rounded-lg p-4 shadow hover:shadow-lg transition">
                         <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
                         <p className="mb-4">{project.description}</p>
-                        {project.project_link && (
+                        {project.github_link && (
                             <a
-                                href={project.project_link}
+                                href={project.github_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 dark:text-blue-400 underline"
+                                className="text-blue-600 dark:text-blue-400 underline mr-4"
                             >
-                                View Project
+                                GitHub
+                            </a>
+                        )}
+                        {project.live_demo && (
+                            <a
+                                href={project.live_demo}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-green-600 dark:text-green-400 underline"
+                            >
+                                Live Demo
                             </a>
                         )}
                     </div>

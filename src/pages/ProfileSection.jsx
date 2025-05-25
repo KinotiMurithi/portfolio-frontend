@@ -4,14 +4,21 @@ export default function ProfileSection() {
     const [profile, setProfile] = useState(null);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/profiles/')
-            .then((res) => res.json())
+        const backendUrl = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
+
+        fetch(`${backendUrl}/api/profiles/`)
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to fetch profile');
+                return res.json();
+            })
             .then((data) => {
                 if (data.length > 0) {
-                    setProfile(data[0]); // Just use the first profile
+                    setProfile(data[0]);
                 }
             })
-            .catch((err) => console.error("Error fetching profile:", err));
+            .catch((err) => {
+                console.error("Error fetching profile:", err);
+            });
     }, []);
 
     if (!profile) return <div className="text-center mt-10">Loading profile...</div>;

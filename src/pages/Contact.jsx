@@ -70,14 +70,13 @@ export default function Contact() {
         const backendUrl = process.env.REACT_APP_API_URL;
 
         if (backendUrl) {
-            // fallback to your Django API if needed
             fetch(`${backendUrl}/contact/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             })
                 .then((res) => {
-                    if (!res.ok) throw new Error('Network response was not ok');
+                    if (!res.ok) throw new Error('Network error');
                     return res.json();
                 })
                 .then(() => {
@@ -87,7 +86,6 @@ export default function Contact() {
                     setFormData({ user_name: '', user_email: '', message: '' });
                 })
                 .catch(() => {
-                    setLoading(false);
                     setStatus('Backend failed. Trying EmailJS...');
                     sendViaEmailJS();
                 });

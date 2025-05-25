@@ -5,8 +5,13 @@ export default function ProjectsSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/projects/')
-            .then((res) => res.json())
+        const backendUrl = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
+
+        fetch(`${backendUrl}/api/projects/`)
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to fetch projects');
+                return res.json();
+            })
             .then((data) => {
                 setProjects(data);
                 setLoading(false);
